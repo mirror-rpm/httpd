@@ -12,8 +12,8 @@
 
 Summary: Apache HTTP Server
 Name: httpd
-Version: 2.4.51
-Release: 3%{?dist}
+Version: 2.4.52
+Release: 1%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -75,7 +75,6 @@ Patch24: httpd-2.4.43-corelimit.patch
 Patch25: httpd-2.4.43-selinux.patch
 Patch26: httpd-2.4.43-gettid.patch
 Patch27: httpd-2.4.43-icons.patch
-Patch28: httpd-2.4.51-openssl3.patch
 Patch30: httpd-2.4.43-cachehardmax.patch
 Patch34: httpd-2.4.43-socket-activation.patch
 Patch38: httpd-2.4.43-sslciphdefault.patch
@@ -90,7 +89,6 @@ Patch45: httpd-2.4.43-logjournal.patch
 Patch60: httpd-2.4.43-enable-sslv3.patch
 Patch61: httpd-2.4.48-r1878890.patch
 Patch63: httpd-2.4.46-htcacheclean-dont-break.patch
-Patch64: httpd-2.4.51-r1894150.patch
 Patch65: httpd-2.4.51-r1894152.patch
 
 # Security fixes
@@ -230,7 +228,6 @@ written in the Lua programming language.
 %patch25 -p1 -b .selinux
 %patch26 -p1 -b .gettid
 %patch27 -p1 -b .icons
-%patch28 -p1 -b .openssl3
 %patch30 -p1 -b .cachehardmax
 %patch34 -p1 -b .socketactivation
 %patch38 -p1 -b .sslciphdefault
@@ -243,7 +240,6 @@ written in the Lua programming language.
 %patch60 -p1 -b .enable-sslv3
 %patch61 -p1 -b .r1878890
 %patch63 -p1 -b .htcacheclean-dont-break
-%patch64 -p1 -b .r1894150
 %patch65 -p1 -b .r1894152
 
 # Patch in the vendor string
@@ -791,6 +787,9 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Wed Dec 22 2021 Joe Orton <jorton@redhat.com> - 2.4.52-1
+- update to 2.4.52
+
 * Mon Dec 06 2021 Neal Gompa <ngompa@fedoraproject.org> - 2.4.51-3
 - Use NAME from os-release(5) for vendor string
   Related: #2029071 - httpd on CentOS identifies as RHEL
