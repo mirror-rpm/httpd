@@ -13,7 +13,7 @@
 Summary: Apache HTTP Server
 Name: httpd
 Version: 2.4.52
-Release: 2%{?dist}
+Release: 3%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -553,9 +553,12 @@ sed -i '/instdso/s,top_srcdir,top_builddir,' \
 cp -p $RPM_BUILD_ROOT%{_libdir}/httpd/build/config_vars.mk \
       $RPM_BUILD_ROOT%{_libdir}/httpd/build/vendor_config_vars.mk
 
-# Sanitize CFLAGS in standard config_vars.mk
-sed '/^CFLAGS/s,=.*$,= -O2 -g -Wall,' \
+# Sanitize CFLAGS & LIBTOOL in standard config_vars.mk
+sed -e '/^CFLAGS/s,=.*$,= -O2 -g -Wall,' \
+    -e '/^LIBTOOL/s,/.*/libtool,%{_bindir}/libtool,' \
     -i $RPM_BUILD_ROOT%{_libdir}/httpd/build/config_vars.mk
+diff -u $RPM_BUILD_ROOT%{_libdir}/httpd/build/vendor_config_vars.mk \
+     $RPM_BUILD_ROOT%{_libdir}/httpd/build/config_vars.mk || true
 
 sed 's/config_vars.mk/vendor_config_vars.mk/' \
     $RPM_BUILD_ROOT%{_bindir}/apxs \
@@ -787,6 +790,9 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Fri Jan 28 2022 Joe Orton <jorton@redhat.com> - 2.4.52-3
+- use LIBTOOL=/usr/bin/libtool in the non-vendor config_vars.mk
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.52-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
