@@ -13,7 +13,7 @@
 Summary: Apache HTTP Server
 Name: httpd
 Version: 2.4.52
-Release: 3%{?dist}
+Release: 4%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -120,7 +120,7 @@ web server.
 
 %package devel
 Summary: Development interfaces for the Apache HTTP Server
-Requires: apr-devel, apr-util-devel, pkgconfig
+Requires: apr-devel, apr-util-devel, pkgconfig, libtool
 Requires: httpd = %{version}-%{release}
 
 %description devel
@@ -790,6 +790,9 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Mon Jan 31 2022 Joe Orton <jorton@redhat.com> - 2.4.52-4
+- add libtool to Requires: for httpd-devel (#2048281)
+
 * Fri Jan 28 2022 Joe Orton <jorton@redhat.com> - 2.4.52-3
 - use LIBTOOL=/usr/bin/libtool in the non-vendor config_vars.mk
 
