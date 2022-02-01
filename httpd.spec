@@ -13,7 +13,7 @@
 Summary: Apache HTTP Server
 Name: httpd
 Version: 2.4.52
-Release: 4%{?dist}
+Release: 5%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -790,6 +790,9 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Tue Feb  1 2022 Joe Orton <jorton@redhat.com> - 2.4.52-5
+- rebuild for new OpenLDAP (#2032699)
+
 * Mon Jan 31 2022 Joe Orton <jorton@redhat.com> - 2.4.52-4
 - add libtool to Requires: for httpd-devel (#2048281)
 
