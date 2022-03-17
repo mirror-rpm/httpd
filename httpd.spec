@@ -12,8 +12,8 @@
 
 Summary: Apache HTTP Server
 Name: httpd
-Version: 2.4.52
-Release: 5%{?dist}
+Version: 2.4.53
+Release: 1%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -66,11 +66,11 @@ Source48: apache-poweredby.png
 Patch2: httpd-2.4.43-apxs.patch
 Patch3: httpd-2.4.43-deplibs.patch
 # Needed for socket activation and mod_systemd patch
-Patch19: httpd-2.4.43-detect-systemd.patch
+Patch19: httpd-2.4.53-detect-systemd.patch
 # Features/functional changes
 Patch21: httpd-2.4.48-r1842929+.patch
 Patch22: httpd-2.4.43-mod_systemd.patch
-Patch23: httpd-2.4.48-export.patch
+Patch23: httpd-2.4.53-export.patch
 Patch24: httpd-2.4.43-corelimit.patch
 Patch25: httpd-2.4.43-selinux.patch
 Patch26: httpd-2.4.43-gettid.patch
@@ -790,6 +790,10 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Thu Mar 17 2022 Luboš Uhliarik <luhliari@redhat.com> - 2.4.53-1
+- new version 2.4.53
+- fixes CVE-2022-23943, CVE-2022-22721, CVE-2022-22720 and CVE-2022-22719
+
 * Tue Feb  1 2022 Joe Orton <jorton@redhat.com> - 2.4.52-5
 - rebuild for new OpenLDAP (#2032699)
 
