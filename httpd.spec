@@ -52,6 +52,7 @@ Source31: README.confmod
 Source32: httpd.service.xml
 Source33: htcacheclean.service.xml
 Source34: httpd.conf.xml
+Source35: 00-brotli.conf
 Source40: htcacheclean.service
 Source41: htcacheclean.sysconf
 Source42: httpd-init.service
@@ -83,6 +84,7 @@ Patch40: httpd-2.4.43-r1861269.patch
 Patch41: httpd-2.4.43-r1861793+.patch
 Patch42: httpd-2.4.48-r1828172+.patch
 Patch45: httpd-2.4.43-logjournal.patch
+Patch46: httpd-2.4.53-separate-systemd-fns.patch
 
 # Bug fixes
 # https://bugzilla.redhat.com/show_bug.cgi?id=1397243
@@ -99,24 +101,32 @@ BuildRequires: perl-interpreter, perl-generators, systemd-devel
 BuildRequires: zlib-devel, libselinux-devel, lua-devel, brotli-devel
 BuildRequires: apr-devel >= 1.5.0, apr-util-devel >= 1.5.0, pcre-devel >= 5.0
 BuildRequires: gnupg2
-Requires: /etc/mime.types, system-logos(httpd-logo-ng)
+Requires: system-logos(httpd-logo-ng)
 Provides: webserver
-Provides: mod_dav = %{version}-%{release}, httpd-suexec = %{version}-%{release}
-Provides: httpd-mmn = %{mmn}, httpd-mmn = %{mmnisa}
-Requires: httpd-tools = %{version}-%{release}
-Requires: httpd-filesystem = %{version}-%{release}
+Requires: httpd-core = 0:%{version}-%{release}
 Recommends: mod_http2, mod_lua
-Requires(pre): httpd-filesystem
 Requires(preun): systemd-units
 Requires(postun): systemd-units
 Requires(post): systemd-units
-Conflicts: apr < 1.5.0-1
-Provides: mod_proxy_uwsgi = %{version}-%{release}
-Obsoletes: mod_proxy_uwsgi < 2.0.17.1-2
 
 %description
 The Apache HTTP Server is a powerful, efficient, and extensible
 web server.
+
+%package core
+Summary: httpd minimal core
+Provides: mod_dav = %{version}-%{release}, httpd-suexec = %{version}-%{release}
+Provides: httpd-mmn = %{mmn}, httpd-mmn = %{mmnisa}
+Provides: mod_proxy_uwsgi = %{version}-%{release}
+Requires: /etc/mime.types
+Requires: httpd-tools = %{version}-%{release}
+Requires: httpd-filesystem = %{version}-%{release}
+Requires(pre): httpd-filesystem
+Conflicts: apr < 1.5.0-1
+Obsoletes: mod_proxy_uwsgi < 2.0.17.1-2
+
+%description core
+The httpd-core package contains essential httpd binaries.
 
 %package devel
 Summary: Development interfaces for the Apache HTTP Server
@@ -236,6 +246,7 @@ written in the Lua programming language.
 %patch41 -p1 -b .r1861793+
 %patch42 -p1 -b .r1828172+
 %patch45 -p1 -b .logjournal
+%patch46 -p1 -b .separatesystemd
 
 %patch60 -p1 -b .enable-sslv3
 %patch61 -p1 -b .r1878890
@@ -372,7 +383,8 @@ install -m 644 $RPM_SOURCE_DIR/README.confmod \
     $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.modules.d/README
 for f in 00-base.conf 00-mpm.conf 00-lua.conf 01-cgi.conf 00-dav.conf \
          00-proxy.conf 00-ssl.conf 01-ldap.conf 00-proxyhtml.conf \
-         01-ldap.conf 00-systemd.conf 01-session.conf 00-optional.conf; do
+         01-ldap.conf 00-systemd.conf 01-session.conf 00-optional.conf \
+         00-brotli.conf; do
   install -m 644 -p $RPM_SOURCE_DIR/$f \
         $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf.modules.d/$f
 done
@@ -649,7 +661,21 @@ set -x
 exit $rv
 
 %files
+%{_mandir}/man8/*
+%{_mandir}/man5/*
+%exclude %{_mandir}/man8/httpd-init.*
 
+%config(noreplace) %{_sysconfdir}/httpd/conf.modules.d/00-brotli.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf.modules.d/00-systemd.conf
+%{_libdir}/httpd/modules/mod_brotli.so
+%{_libdir}/httpd/modules/mod_systemd.so
+
+%{_unitdir}/httpd.service
+%{_unitdir}/httpd@.service
+%{_unitdir}/htcacheclean.service
+%{_unitdir}/*.socket
+
+%files core
 %doc ABOUT_APACHE README CHANGES LICENSE VERSIONING NOTICE
 %doc docs/conf/extra/*.conf
 %doc instance.conf server-status.conf
@@ -659,6 +685,7 @@ exit $rv
 %{_sysconfdir}/httpd/state
 %{_sysconfdir}/httpd/run
 %dir %{_sysconfdir}/httpd/conf
+
 %config(noreplace) %{_sysconfdir}/httpd/conf/httpd.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/magic
 
@@ -670,7 +697,10 @@ exit $rv
 
 %dir %{_sysconfdir}/httpd/conf.modules.d
 %{_sysconfdir}/httpd/conf.modules.d/README
+
 %config(noreplace) %{_sysconfdir}/httpd/conf.modules.d/*.conf
+%exclude %{_sysconfdir}/httpd/conf.modules.d/00-brotli.conf
+%exclude %{_sysconfdir}/httpd/conf.modules.d/00-systemd.conf
 %exclude %{_sysconfdir}/httpd/conf.modules.d/00-ssl.conf
 %exclude %{_sysconfdir}/httpd/conf.modules.d/00-proxyhtml.conf
 %exclude %{_sysconfdir}/httpd/conf.modules.d/00-lua.conf
@@ -692,6 +722,8 @@ exit $rv
 %dir %{_libdir}/httpd
 %dir %{_libdir}/httpd/modules
 %{_libdir}/httpd/modules/mod*.so
+%exclude %{_libdir}/httpd/modules/mod_brotli.so
+%exclude %{_libdir}/httpd/modules/mod_systemd.so
 %exclude %{_libdir}/httpd/modules/mod_auth_form.so
 %exclude %{_libdir}/httpd/modules/mod_ssl.so
 %exclude %{_libdir}/httpd/modules/mod_*ldap.so
@@ -718,14 +750,6 @@ exit $rv
 %attr(0700,apache,apache) %dir %{_localstatedir}/cache/httpd
 %attr(0700,apache,apache) %dir %{_localstatedir}/cache/httpd/proxy
 
-%{_mandir}/man8/*
-%{_mandir}/man5/*
-%exclude %{_mandir}/man8/httpd-init.*
-
-%{_unitdir}/httpd.service
-%{_unitdir}/httpd@.service
-%{_unitdir}/htcacheclean.service
-%{_unitdir}/*.socket
 
 %files filesystem
 %dir %{_sysconfdir}/httpd
