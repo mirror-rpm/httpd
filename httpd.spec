@@ -13,7 +13,7 @@
 Summary: Apache HTTP Server
 Name: httpd
 Version: 2.4.53
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -814,6 +814,10 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Wed Mar 30 2022 Luboš Uhliarik <luhliari@redhat.com> - 2.4.53-2
+- try to minimize httpd dependencies (new httpd-core package)
+- mod_systemd and mod_brotli are now in the main httpd package
+
 * Thu Mar 17 2022 Luboš Uhliarik <luhliari@redhat.com> - 2.4.53-1
 - new version 2.4.53
 - fixes CVE-2022-23943, CVE-2022-22721, CVE-2022-22720 and CVE-2022-22719
