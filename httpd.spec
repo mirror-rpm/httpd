@@ -815,6 +815,7 @@ exit $rv
 
 %changelog
 * Wed Mar 30 2022 Luboš Uhliarik <luhliari@redhat.com> - 2.4.53-2
+- Resolves: #2070517 - Allow install httpd with smaller footprint
 - try to minimize httpd dependencies (new httpd-core package)
 - mod_systemd and mod_brotli are now in the main httpd package
 
