@@ -246,7 +246,7 @@ written in the Lua programming language.
 %patch41 -p1 -b .r1861793+
 %patch42 -p1 -b .r1828172+
 %patch45 -p1 -b .logjournal
-#patch46 -p1 -b .separatesystemd
+%patch46 -p1 -b .separatesystemd
 
 %patch60 -p1 -b .enable-sslv3
 %patch61 -p1 -b .r1878890
