@@ -166,7 +166,7 @@ index 877a593..bd52a98 100644
  /** @} */
  
 diff --git a/server/listen.c b/server/listen.c
-index e2e028a..aa6f91c 100644
+index e2e028a..5d1c0e1 100644
 --- a/server/listen.c
 +++ b/server/listen.c
 @@ -34,10 +34,6 @@
@@ -224,7 +224,7 @@ index e2e028a..aa6f91c 100644
 +    find_systemd_socket = APR_RETRIEVE_OPTIONAL_FN(ap_find_systemd_socket);
 +
 +    if (!find_systemd_socket)
-+       return "Systemd socket activation is used, but mod_systemd is probably"
++       return "Systemd socket activation is used, but mod_systemd is probably "
 +               "not loaded";
 +
      int fd = find_systemd_socket(process, port);
@@ -270,7 +270,7 @@ index e2e028a..aa6f91c 100644
  
      if (err != NULL) {
          return err;
-@@ -973,7 +957,10 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
+@@ -973,7 +957,12 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
      }
  #ifdef HAVE_SYSTEMD
      if (use_systemd == -1) {
@@ -278,6 +278,8 @@ index e2e028a..aa6f91c 100644
 +        systemd_listen_fds = APR_RETRIEVE_OPTIONAL_FN(ap_systemd_listen_fds);
 +        if (systemd_listen_fds != NULL) {
 +            use_systemd = systemd_listen_fds(0) > 0;
++        } else {
++            use_systemd = 0;
 +        }
      }
  #endif

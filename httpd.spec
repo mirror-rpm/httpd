@@ -13,7 +13,7 @@
 Summary: Apache HTTP Server
 Name: httpd
 Version: 2.4.53
-Release: 2%{?dist}
+Release: 3%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -246,7 +246,7 @@ written in the Lua programming language.
 %patch41 -p1 -b .r1861793+
 %patch42 -p1 -b .r1828172+
 %patch45 -p1 -b .logjournal
-%patch46 -p1 -b .separatesystemd
+#patch46 -p1 -b .separatesystemd
 
 %patch60 -p1 -b .enable-sslv3
 %patch61 -p1 -b .r1878890
@@ -814,6 +814,9 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Thu Apr 07 2022 Luboš Uhliarik <luhliari@redhat.com> - 2.4.53-3
+- Related: #2070517 - fix issue when mod_systemd is not loaded
+
 * Wed Mar 30 2022 Luboš Uhliarik <luhliari@redhat.com> - 2.4.53-2
 - Resolves: #2070517 - Allow install httpd with smaller footprint
 - try to minimize httpd dependencies (new httpd-core package)
