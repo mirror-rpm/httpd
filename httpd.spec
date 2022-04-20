@@ -10,10 +10,18 @@
 %global mpm prefork
 %endif
 
+%if 0%{?fedora} > 36 || 0%{?rhel} > 9
+%bcond_without pcre2
+%bcond_with pcre
+%else
+%bcond_with pcre2
+%bcond_without pcre
+%endif
+
 Summary: Apache HTTP Server
 Name: httpd
 Version: 2.4.53
-Release: 3%{?dist}
+Release: 4%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -99,7 +107,13 @@ License: ASL 2.0
 BuildRequires: gcc, autoconf, pkgconfig, findutils, xmlto
 BuildRequires: perl-interpreter, perl-generators, systemd-devel
 BuildRequires: zlib-devel, libselinux-devel, lua-devel, brotli-devel
-BuildRequires: apr-devel >= 1.5.0, apr-util-devel >= 1.5.0, pcre-devel >= 5.0
+BuildRequires: apr-devel >= 1.5.0, apr-util-devel >= 1.5.0
+%if %{with pcre2}
+BuildRequires: pcre2-devel
+%endif
+%if %{with pcre}
+BuildRequires: pcre-devel > 5.0
+%endif
 BuildRequires: gnupg2
 Requires: system-logos(httpd-logo-ng)
 Provides: webserver
@@ -300,6 +314,7 @@ xmlto man %{SOURCE47}
 
 : Building with MMN %{mmn}, MMN-ISA %{mmnisa}
 : Default MPM is %{mpm}, vendor string is '%{vstring}'
+: Regex Engine: PCRE=%{with pcre} PCRE2=%{with pcre2}
 
 %build
 # forcibly prevent use of bundled apr, apr-util, pcre
@@ -344,7 +359,12 @@ export LYNX_PATH=/usr/bin/links
         --with-suexec-uidmin=1000 --with-suexec-gidmin=1000 \
         --with-brotli \
         --enable-pie \
+%if %{with pcre2}
+        --with-pcre2 \
+%endif
+%if %{with pcre}
         --with-pcre \
+%endif
         --enable-mods-shared=all \
         --enable-ssl --with-ssl --disable-distcache \
         --enable-proxy --enable-proxy-fdpass \
@@ -814,6 +834,9 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Wed Apr 20 2022 Joe Orton <jorton@redhat.com> - 2.4.53-4
+- switch to PCRE2 for new releases
+
 * Thu Apr 07 2022 Luboš Uhliarik <luhliari@redhat.com> - 2.4.53-3
 - Related: #2070517 - fix issue when mod_systemd is not loaded
 
