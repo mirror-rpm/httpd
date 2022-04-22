@@ -21,7 +21,7 @@
 Summary: Apache HTTP Server
 Name: httpd
 Version: 2.4.53
-Release: 4%{?dist}
+Release: 5%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -83,7 +83,7 @@ Patch23: httpd-2.4.53-export.patch
 Patch24: httpd-2.4.43-corelimit.patch
 Patch25: httpd-2.4.43-selinux.patch
 Patch26: httpd-2.4.43-gettid.patch
-Patch27: httpd-2.4.43-icons.patch
+Patch27: httpd-2.4.53-icons.patch
 Patch30: httpd-2.4.43-cachehardmax.patch
 Patch34: httpd-2.4.43-socket-activation.patch
 Patch38: httpd-2.4.43-sslciphdefault.patch
@@ -834,6 +834,9 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Thu Apr 21 2022 Luboš Uhliarik <luhliari@redhat.com> - 2.4.53-5
+- don't use bomb.gif icon for all files/dirs ending with core
+
 * Wed Apr 20 2022 Joe Orton <jorton@redhat.com> - 2.4.53-4
 - switch to PCRE2 for new releases
 
