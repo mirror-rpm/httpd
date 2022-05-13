@@ -327,8 +327,7 @@ autoheader && autoconf || exit 1
 %{__perl} -pi -e "s:\@exp_installbuilddir\@:%{_libdir}/httpd/build:g" \
         support/apxs.in
 
-export CFLAGS=$RPM_OPT_FLAGS
-export LDFLAGS="-Wl,-z,relro,-z,now"
+%set_build_flags
 
 # Hard-code path to links to avoid unnecessary builddep
 export LYNX_PATH=/usr/bin/links
@@ -834,6 +833,9 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Fri May 13 2022 Joe Orton <jorton@redhat.com> - 2.4.53-5
+- use %%set_build_flags macro
+
 * Thu Apr 21 2022 Luboš Uhliarik <luhliari@redhat.com> - 2.4.53-5
 - don't use bomb.gif icon for all files/dirs ending with core
 
