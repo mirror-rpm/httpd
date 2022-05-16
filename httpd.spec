@@ -18,10 +18,13 @@
 %bcond_without pcre
 %endif
 
+# Similar issue to https://bugzilla.redhat.com/show_bug.cgi?id=2043092
+%undefine _package_note_flags
+
 Summary: Apache HTTP Server
 Name: httpd
 Version: 2.4.53
-Release: 6%{?dist}
+Release: 7%{?dist}
 URL: https://httpd.apache.org/
 Source0: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 Source1: https://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2.asc
@@ -833,6 +836,9 @@ exit $rv
 %{_rpmconfigdir}/macros.d/macros.httpd
 
 %changelog
+* Mon May 16 2022 Joe Orton <jorton@redhat.com> - 2.4.53-7
+- disable package notes
+
 * Fri May 13 2022 Joe Orton <jorton@redhat.com> - 2.4.53-6
 - use %%set_build_flags macro
 
